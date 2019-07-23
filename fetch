@@ -1,0 +1,80 @@
+import React, { Component } from 'react';
+
+
+class User extends Component{
+  constructor(){
+  super();
+  this.state={
+     hits: [],
+     isLoading: false,
+     error: null,
+   }
+}
+
+componentDidMount(){
+  this.setState({
+     isLoading: true
+    })
+  fetch('http://localhost:8000/api/v1/user')
+  .then(response => {
+       if(response.ok){
+       return response.json()
+      }else{
+      throw new Error('Something went wrong...')
+    }
+ })
+  .then(data => this.setState({
+    data: data.data,
+    isLoading: false
+  }))
+  .catch(error => this.setState({
+     error: null, 
+     isLoading: false
+  }))
+ }
+
+render(){
+const {data, isLoading, error} = this.state;
+
+    if(isLoading){
+      return <p>Loading ... </p>
+    }
+    if(error){
+      return <p>{error.message}</p>
+     }
+return(
+
+<table border="1">
+     
+     <tr>
+      <td><b><center>No</center></b></td>
+      <td><b><center>Username</center></b></td>
+      <td><b><center>email</center></b></td>
+      <td><b><center>Delete</center></b></td>
+      <td><b><center>Edit</center></b></td>
+    </tr>
+        {
+          data && data.map(data => 
+          <tr key={data.id}>   
+          
+            <td>no</td>
+  <td>{data.username}</td>
+  <td>{data.email}</td>
+    <td>
+      <center>
+        <a href="" onclick="javascript: return confirm('Anda Yakin Hapus?');">Delete</a>
+      </center>
+      </td>
+    <td>
+      <center>
+        <a href="">Edit</a>
+      </center>
+    </td>
+          </tr> 
+        )}
+   </table>
+
+   )
+  }
+}
+export default User

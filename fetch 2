@@ -1,0 +1,65 @@
+import React, { Component } from 'react';
+
+
+class Dosen extends Component{
+  constructor(){
+  super();
+  this.state={
+     hits: [],
+     isLoading: false,
+     error: null,
+   }
+}
+
+componentDidMount(){
+  this.setState({
+     isLoading: true
+    })
+  fetch('http://localhost:8000/api/v1/mahasiswa')
+  .then(response => {
+       if(response.ok){
+       return response.json()
+      }else{
+      throw new Error('Something went wrong...')
+    }
+ })
+  .then(mahasiswa => this.setState({
+    mahasiswa: mahasiswa.mahasiswa,
+    isLoading: false
+  }))
+  .catch(error => this.setState({
+     error: null, 
+     isLoading: false
+  }))
+ }
+
+render(){
+const {mahasiswa, isLoading, error} = this.state;
+
+    if(isLoading){
+      return <p>Loading ... </p>
+    }
+    if(error){
+      return <p>{error.message}</p>
+     }
+return(
+    
+<table border="1">
+     
+      <th>nidn</th>
+        <th>user_id</th>
+        <th>frs</th>   
+        {
+          mahasiswa && mahasiswa.map(mahasiswa => 
+          <tr key={mahasiswa.NPM}>   
+          
+            <td>{mahasiswa.NPM}</td>
+            <td>{mahasiswa.sks}</td>
+            <td>{mahasiswa.frs}</td>
+          </tr> 
+        )}
+   </table>
+   )
+  }
+}
+export default Dosen
